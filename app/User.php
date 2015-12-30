@@ -6,17 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    //UserPayment Relation
-    public function userPayments(){
-      return $this->hasMany('App/UserPayment', 'user_id');
-    }
+  // table name
+  protected $table = 'users';
 
-    //UserFavorite Relation
-    public function userFavorites(){
-      return $this->hasMany('App/UserFavorite', 'favorite_user_id');
-    }
+  // filleable fields
+	protected $fillable = array('username','password');
 
-    public function userFavorite(){
-      return $this->belongsTo('App/UserFavorite', 'user_id')
-    }
+	// protected fields, these aren't shown
+	protected $hidden = ['password'];
+    
 }
