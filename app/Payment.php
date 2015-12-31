@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
+    // table name
+    protected $table = 'payments';
+
+    // filleable fields
+  	protected $fillable = array('amount');
+    
     //User Payment Relation
     public function userPayment(){
       return $this->belongsTo('App/UserPayment', 'payment_id');
