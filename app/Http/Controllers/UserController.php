@@ -84,16 +84,47 @@ class UserController extends Controller{
 	 * @return Response
 	 */
 	public function update(Request $request, $id){
+    $rules = [
+      'username'  => 'required',
+      'password'  => 'required',
+      'age' =>  'required|integer'
+    ];
     try {
-      $user=User::find($id);
+      $user = User::find($id);
       if (!$user){
         return response()->json(['code'=>404,'messages'=>'User not found.'],404);
   		}
-  		return response()->json(['code'=>200,'data'=>$user],200);
-    } catch (Exception $e) {
+
+      $username = $request->input('username');
+      $password = $request->input('password');
+      $age = $request->input('age');
+
+      if($username){
+        $user->username = $username;
+      }
+      if($password){
+        $user->password = $password;
+      }
+      if($age){
+        $user->age = (int)$age;
+      }
+
+      $validator = Validator::make($request->all(), $rules);
+      if ($validator->fails()) {
+        return response()->json(['code'=>422,
+            'messages'  => $validator->errors()->all()],422);
+      }
+      if ($age < 18){
+        return response()->json(['code'=>422,
+            'messages'  => 'Age field must be greater than 18'],422);
+      }
+
+      $user->save();
+      return response()->json(['code'=>200,'data'=>$user],200);
+      } catch (Exception $e) {
         return response()->json(['code'=>500,'messages'=>'Internal Server Error'],500);
     }
-	}
+  }
 
 	/**
 	 * Remove the specified resource from storage.
