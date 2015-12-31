@@ -8,7 +8,6 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 // Model
-use App\Payment;
 use App\User;
 use Response;
 use Validator;
