@@ -10,9 +10,9 @@ class User extends Model
   protected $table = 'users';
 
   // filleable fields
-	protected $fillable = array('username','password');
+	protected $fillable = array('username','password', 'age');
 
 	// protected fields, these aren't shown
 	protected $hidden = ['password'];
-    
+
 }
