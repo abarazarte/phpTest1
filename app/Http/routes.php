@@ -30,7 +30,7 @@ Route::group(['middleware' => ['web']], function () {
     //
 });
 Route::group(array('prefix' => 'api/v1'), function(){
-        Route::resource('payment','PaymentController',[ 'only'=>['index','show'] ]);
+        Route::resource('payments','PaymentController',[ 'only'=>['index','show'] ]);
         Route::resource('users', 'UserController', ['except'=>['create','edit']]);
         Route::resource('users.favorites','UserFavoritesController', ['except'=>['create','edit', 'show', 'update']]);
         Route::resource('users.payments','UserPaymentsController', ['except'=>['create','edit', 'show']]);

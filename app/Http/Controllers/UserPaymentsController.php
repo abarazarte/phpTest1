@@ -10,7 +10,6 @@ use App\Http\Controllers\Controller;
 // Model
 use App\Payment;
 use App\User;
-use App\UserPayment;
 use Response;
 use Validator;
 
