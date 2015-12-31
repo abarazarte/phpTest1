@@ -11,9 +11,9 @@ class Payment extends Model
 
     // filleable fields
   	protected $fillable = array('amount');
-    
+
     //User Payment Relation
     public function userPayment(){
-      return $this->belongsTo('App/UserPayment', 'payment_id');
+      return $this->belongsTo('App/User', 'user_id', 'id');
     }
 }

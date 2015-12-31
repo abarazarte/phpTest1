@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\UserPayment;
 
 class User extends Model
 {
@@ -14,5 +15,10 @@ class User extends Model
 
 	// protected fields, these aren't shown
 	protected $hidden = ['password'];
+
+  //Favorite user Relation
+  public function payments(){
+    return $this->hasMany('App\Payment', 'user_id', 'id');
+  }
 
 }

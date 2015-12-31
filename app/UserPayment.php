@@ -6,13 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserPayment extends Model
 {
+    // table name
+    protected $table = 'user_payments';
+
     // User Relation
     public function user(){
-      return $this->belongsTo('App/User', 'user_id');
-    }
-
-    // Payment Relation
-    public function payment(){
-      return $this->hasOne('App/Payment', 'payment_id');
+      return $this->belongsTo('app\User', 'user_id', 'id');
     }
 }
