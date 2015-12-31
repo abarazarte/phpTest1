@@ -54,16 +54,21 @@ class UserController extends Controller{
 
 	public function store(Request $request){
     $rules = [
-      'username'      => 'required|unique:users',
-      'password'  => 'required'
+      'username'  => 'required|unique:users',
+      'password'  => 'required',
+      'age' =>  'required|integer'
     ];
 
 		try {
       $validator = Validator::make($request->all(), $rules);
-      if ($validator->fails()) {
+  		if ($validator->fails()) {
         return response()->json(['code'=>422,
             'messages'  => $validator->errors()->all()],422);
       }
+      if ($request->input('age') < 18){
+        return response()->json(['code'=>422,
+            'messages'  => 'Age field must be greater than 18'],422);
+  		}
       $newUser = User::create($request->all());
       $response = Response::make(json_encode(['code'=>201,'data'=>$newUser]), 201);
       return $response;
