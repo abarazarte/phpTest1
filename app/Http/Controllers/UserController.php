@@ -11,16 +11,21 @@ use App\Http\Controllers\Controller;
 use App\User;
 
 use Response;
+use Validator;
 
-class UserController extends Controller
-{
+class UserController extends Controller{
   /**
  * Display a listing of the resource.
  *
  * @return Response
  */
   public function index(){
-    return response()->json(['status'=>'ok','data'=>User::all()], 200);
+    try {
+      $users = User::all();
+      return response()->json(['code'=>200,'data'=>$users], 200);
+    } catch (Exception $e) {
+        return response()->json(['code'=>500,'messages'=>'Internal Server Error'],500);
+    }
   }
 
   /**
@@ -29,16 +34,16 @@ class UserController extends Controller
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
-	{
-		$user=User::find($id);
-
-		// Si no existe ese fabricante devolvemos un error.
-		if (!$user){
-			return response()->json(['errors'=>array(['code'=>404,'message'=>'User not found.'])],404);
-		}
-		return response()->json(['status'=>'ok','data'=>$user],200);
-
+	public function show($id){
+		try {
+      $user=User::find($id);
+      if (!$user){
+        return response()->json(['code'=>404,'messages'=>'User not found.'],404);
+  		}
+  		return response()->json(['code'=>200,'data'=>$user],200);
+    } catch (Exception $e) {
+        return response()->json(['code'=>500,'messages'=>'Internal Server Error'],500);
+    }
 	}
 
   /**
@@ -47,13 +52,60 @@ class UserController extends Controller
 	 * @return Response
 	 */
 
-	public function store(Request $request)
-	{
-    if (!$request->input('username') || !$request->input('password')){
-			return response()->json(['errors'=>array(['code'=>422,'message'=>'Missing fields.'])],422);
-		}
-		$newUser = User::create($request->all());
-		$response = Response::make(json_encode(['data'=>$newUser]), 201);
-		return $response;
+	public function store(Request $request){
+    $rules = [
+      'username'      => 'required|unique:users',
+      'password'  => 'required'
+    ];
+
+		try {
+      $validator = Validator::make($request->all(), $rules);
+      if ($validator->fails()) {
+        return response()->json(['code'=>422,
+            'messages'  => $validator->errors()->all()],422);
+      }
+      $newUser = User::create($request->all());
+      $response = Response::make(json_encode(['code'=>201,'data'=>$newUser]), 201);
+      return $response;
+    } catch (Exception $e) {
+        return response()->json(['code'=>500,'messages'=>'Internal Server Error'],500);
+    }
+}
+
+  /**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function update(Request $request, $id){
+    try {
+      $user=User::find($id);
+      if (!$user){
+        return response()->json(['code'=>404,'messages'=>'User not found.'],404);
+  		}
+  		return response()->json(['code'=>200,'data'=>$user],200);
+    } catch (Exception $e) {
+        return response()->json(['code'=>500,'messages'=>'Internal Server Error'],500);
+    }
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function destroy($id){
+    try {
+      $user=User::find($id);
+      if (!$user){
+        return response()->json(['code'=>404,'messages'=>'User not found.'],404);
+  		}
+      $user->delete();
+  		return response()->json(['code'=>204,'message'=>'User deleted'],204);
+    } catch (Exception $e) {
+        return response()->json(['code'=>500,'messages'=>'Internal Server Error'],500);
+    }
 	}
 }
